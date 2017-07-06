@@ -89,14 +89,18 @@ textarea {
    Author's custom styles
    ========================================================================== */
 
-#logo-vertical,
-#logo-horizontal {
+#logo-vertical {
     display: none;
 }
 
+#logo {
+    min-width: 616px;
+    min-height: 374px;
+}
 
-
-
+#logo svg {
+    overflow: visible;
+}
 
 
 
