@@ -24,6 +24,19 @@ const animationTiming = {
     }
 };
 
+const mouseOverSqueeze = function() {
+    this
+        .animate(200, animationTiming.swingTo, 0)
+        .scale(.95);
+};
+
+const mouseOutSqueeze = function() {
+    this
+        .animate(200, animationTiming.swingTo, 0)
+        .scale(1)
+        .finish();
+};
+
 const screen = {
     mobile: 768,
 };
@@ -101,12 +114,9 @@ const logo = {
 };
 
 (function() {
-    window.addEventListener('resize', resizeThrottler, false);
-    window.addEventListener('orientationchange', resizeThrottler, false);
-
     let resizeTimeout;
 
-    function resizeThrottler() {
+    const resizeThrottler = () => {
       // ignore resize events as long as an actualResizeHandler execution is in the queue
         if (!resizeTimeout) {
             resizeTimeout = setTimeout(function() {
@@ -114,9 +124,9 @@ const logo = {
                 actualResizeHandler();
             }, 900);
         }
-    }
+    };
 
-    function actualResizeHandler() {
+    const actualResizeHandler = () => {
         let reset = document.getElementById('logo');
 
         while (reset.firstChild) {
@@ -124,15 +134,20 @@ const logo = {
         }
 
         runLogo();
-    }
+    };
 
     document.onreadystatechange = () => {
         if (document.readyState === 'complete') runLogo();
     };
+
+    window.addEventListener('resize', resizeThrottler, false);
+    window.addEventListener('orientationchange', resizeThrottler, false);
 })();
 
 function runLogo() {
     let svg = SVG('logo');
+
+    svg.viewbox('0 0 616 374').size('100%', '100%');
 
     let color = {
         base: '#fe5f55',
@@ -154,109 +169,117 @@ function runLogo() {
 
     base
         .fill(color.base)
-        .opacity(0)
         .scale(-.05)
-        .rotate(-5);
+        .rotate(-5)
+        .addClass('base');
 
     curlyLeft
-        .fill(color.white)
-        .opacity(0)
         .back()
-        .dx(100);
+        .dx(100)
+        .addClass('curly');
 
     curlyRight
-        .fill(color.white)
-        .opacity(0)
         .back()
-        .dx(-100);
+        .dx(-100)
+        .addClass('curly');
 
     symbol
-        .fill(color.white)
-        .opacity(0)
         .scale(.1);
 
     textFname =
         svg
         .group()
-        .fill(color.white)
-        .opacity(0)
-        .dmove(52, 70);
+        .dmove(52, 70)
+        .addClass('text');
 
     textLname =
         svg
         .group()
-        .fill(color.white)
-        .opacity(0)
-        .dmove(-52, -70);
+        .dmove(-52, -70)
+        .addClass('text');
 
     textPrefix =
         svg
         .group()
-        .fill(color.white)
-        .opacity(0)
-        .dmove(52, -70);
+        .dmove(52, -70)
+        .addClass('text');
 
     textSuffix =
         svg
         .group()
-        .fill(color.white)
-        .opacity(0)
-        .dmove(-52, 70);
+        .dmove(-52, 70)
+        .addClass('text');
+
+    svg.each(function() {
+        this.opacity(0);
+        if((this.type === 'path' || this.type === 'g') && !this.hasClass('base')) {
+            this.style({fill: color.white});
+        }
+
+        if(this.hasClass('curly')) {
+            this.on('mouseover', mouseOverSqueeze)
+                .on('mouseout', mouseOutSqueeze);
+        }
+    });
 
     let
         fNameLetter = [
-            svg.path(logo.fNameLetter0),
-            svg.path(logo.fNameLetter1),
-            svg.path(logo.fNameLetter2),
-            svg.path(logo.fNameLetter3),
-            svg.path(logo.fNameLetter4),
-            svg.path(logo.fNameLetter5),
-            svg.path(logo.fNameLetter6)
+            logo.fNameLetter0,
+            logo.fNameLetter1,
+            logo.fNameLetter2,
+            logo.fNameLetter3,
+            logo.fNameLetter4,
+            logo.fNameLetter5,
+            logo.fNameLetter6
         ],
         lNameLetter = [
-            svg.path(logo.lNameLetter0),
-            svg.path(logo.lNameLetter1),
-            svg.path(logo.lNameLetter2),
-            svg.path(logo.lNameLetter3),
-            svg.path(logo.lNameLetter4),
-            svg.path(logo.lNameLetter5),
-            svg.path(logo.lNameLetter6)
+            logo.lNameLetter0,
+            logo.lNameLetter1,
+            logo.lNameLetter2,
+            logo.lNameLetter3,
+            logo.lNameLetter4,
+            logo.lNameLetter5,
+            logo.lNameLetter6
         ],
         prefixLetter = [
-            svg.path(logo.prefixLetter0),
-            svg.path(logo.prefixLetter1),
-            svg.path(logo.prefixLetter2),
-            svg.path(logo.prefixLetter3),
-            svg.path(logo.prefixLetter4),
-            svg.path(logo.prefixLetter5),
-            svg.path(logo.prefixLetter6),
-            svg.path(logo.prefixLetter7),
+            logo.prefixLetter0,
+            logo.prefixLetter1,
+            logo.prefixLetter2,
+            logo.prefixLetter3,
+            logo.prefixLetter4,
+            logo.prefixLetter5,
+            logo.prefixLetter6,
+            logo.prefixLetter7,
         ],
         suffixLetter = [
-            svg.path(logo.suffixLetter0),
-            svg.path(logo.suffixLetter1),
-            svg.path(logo.suffixLetter2),
-            svg.path(logo.suffixLetter3),
-            svg.path(logo.suffixLetter4),
-            svg.path(logo.suffixLetter5),
-            svg.path(logo.suffixLetter6),
-            svg.path(logo.suffixLetter7),
-            svg.path(logo.suffixLetter8),
+            logo.suffixLetter0,
+            logo.suffixLetter1,
+            logo.suffixLetter2,
+            logo.suffixLetter3,
+            logo.suffixLetter4,
+            logo.suffixLetter5,
+            logo.suffixLetter6,
+            logo.suffixLetter7,
+            logo.suffixLetter8,
         ];
 
     fNameLetter.map(n => {
+        n = svg.path(n);
         textFname.add(n);
     });
 
     lNameLetter.map(n => {
+        n = svg.path(n);
         textLname.add(n);
     });
 
     prefixLetter.map(n => {
+        n = svg.path(n);
         textPrefix.add(n);
     });
 
     suffixLetter.map(n => {
+        n = svg.path(n);
         textSuffix.add(n);
     });
 
