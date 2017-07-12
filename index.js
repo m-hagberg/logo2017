@@ -29,7 +29,6 @@ const mouseOverSqueeze = function() {
         .animate(200, animationTiming.swingTo, 0)
         .scale(.95);
 };
-
 const mouseOutSqueeze = function() {
     this
         .animate(200, animationTiming.swingTo, 0)
@@ -184,7 +183,8 @@ function runLogo() {
         .addClass('curly');
 
     symbol
-        .scale(.1);
+        .scale(.1)
+        .addClass('symbol');
 
     textFname =
         svg
@@ -219,6 +219,44 @@ function runLogo() {
         if(this.hasClass('curly')) {
             this.on('mouseover', mouseOverSqueeze)
                 .on('mouseout', mouseOutSqueeze);
+        }
+
+        if(this.hasClass('symbol')) {
+            this
+                .on('mousedown', function() {
+                    textFname
+                        .animate(300, animationTiming.swingTo, 0)
+                        .dmove(7, 7);
+
+                    textLname
+                        .animate(300, animationTiming.swingTo, 0)
+                        .dmove(-7, -7);
+
+                    textPrefix
+                        .animate(300, animationTiming.swingTo, 0)
+                        .dmove(3.5, -3.5);
+
+                    textSuffix
+                        .animate(300, animationTiming.swingTo, 0)
+                        .dmove(-3.5, 3.5);
+                })
+                .on('mouseup', function() {
+                    textFname
+                        .animate(300, animationTiming.swingTo, 0)
+                        .dmove(-7, -7);
+
+                    textLname
+                        .animate(300, animationTiming.swingTo, 0)
+                        .dmove(7, 7);
+
+                    textPrefix
+                        .animate(300, animationTiming.swingTo, 0)
+                        .dmove(-3.5, 3.5);
+
+                    textSuffix
+                        .animate(300, animationTiming.swingTo, 0)
+                        .dmove(3.5, -3.5);
+                });
         }
     });
 
@@ -296,7 +334,16 @@ function runLogo() {
             .animate(600, animationTiming.bounceOut, 200)
             .rotate(0)
             .scale(1)
-            .opacity(1);
+            .opacity(1)
+            .delay(9000)
+            .animate(3000, animationTiming.elastic, 3000)
+            .rotate(-.5)
+            .scale(.99)
+            .scale(1.01)
+            .rotate(.5)
+            .rotate(0)
+            .scale(1)
+            .loop();
         break;
     case false:
         base
@@ -304,7 +351,13 @@ function runLogo() {
             .cx(150)
             .rotate(-90)
             .scale(1)
-            .opacity(.95);
+            .opacity(1)
+            .delay(9000)
+            .animate(3000, animationTiming.elastic, 3000)
+            .scale(.99)
+            .scale(1.01)
+            .scale(1)
+            .loop();
         break;
     default:
         console.error(errorMsg);
